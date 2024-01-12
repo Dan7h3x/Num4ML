@@ -2,7 +2,6 @@
 # -*- coding=utf-8 -*-
 #
 #
-
 """Documention for Module/Script ( tools ).
 ----------------------------------------
  Description:
@@ -15,7 +14,6 @@
  TODO :
      --> Add more awesome stuffs.
 """
-
 
 ### Import modules
 
@@ -47,7 +45,7 @@ def PNorms(x, p, Ax):
     if isinstance(p, int):
         raise TypeError("Please enter p as integer.")
     else:
-        return np.sum(np.abs(x) ** p, axis=Ax) ** (1 / p)
+        return np.sum(np.abs(x)**p, axis=Ax)**(1 / p)
 
 
 def FrobNorm(x):
@@ -65,7 +63,7 @@ def FrobNorm(x):
     res = 0.0
     for i in range(n):
         for j in range(d):
-            res += x[i, j] ** 2
+            res += x[i, j]**2
 
     return res**0.5
 
@@ -169,7 +167,8 @@ def conditionNumber(A, order):
         Order of norm
     """
     assert len(A.shape) == 2
-    return np.linalg.norm(A, ord=order) * np.linalg.norm(np.linalg.inv(A), ord=order)
+    return np.linalg.norm(A, ord=order) * np.linalg.norm(np.linalg.inv(A),
+                                                         ord=order)
 
 
 def pca(D):
@@ -205,8 +204,8 @@ def GDAlgorithms(X, y, learning_rate, num_iterations, algorithm):
         elif algorithm == "stochastic":
             for i in range(m):
                 random_index = np.random.randint(m)
-                xi = X[random_index : random_index + 1]
-                yi = y[random_index : random_index + 1]
+                xi = X[random_index:random_index + 1]
+                yi = y[random_index:random_index + 1]
                 prediction = xi.dot(theta)
                 error = prediction - yi
                 gradient = xi.T.dot(error)
@@ -222,8 +221,7 @@ def GDAlgorithms(X, y, learning_rate, num_iterations, algorithm):
             theta = theta - learning_rate * gradient
         else:
             raise ValueError(
-                'Please choose either "batch", "stochastic", or "mini-batch".'
-            )
+                'Please choose either "batch", "stochastic", or "mini-batch".')
 
         # Calculate and store the loss
         loss = np.mean(errors**2)
@@ -244,7 +242,12 @@ def optimization_algorithm(key):
 
 
 class AdamOptimizer:
-    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-5):
+
+    def __init__(self,
+                 learning_rate=0.001,
+                 beta1=0.9,
+                 beta2=0.999,
+                 epsilon=1e-5):
         self.learning_rate = learning_rate
         self.beta1 = beta1
         self.beta2 = beta2
@@ -260,22 +263,20 @@ class AdamOptimizer:
                 self.m[param_key] = np.zeros_like(parameters[param_key])
                 self.v[param_key] = np.zeros_like(parameters[param_key])
 
-            self.m[param_key] = (
-                self.beta1 * self.m[param_key] + (1 - self.beta1) * gradients[param_key]
-            )
+            self.m[param_key] = (self.beta1 * self.m[param_key] +
+                                 (1 - self.beta1) * gradients[param_key])
             self.v[param_key] = self.beta2 * self.v[param_key] + (
-                1 - self.beta2
-            ) * np.square(gradients[param_key])
+                1 - self.beta2) * np.square(gradients[param_key])
             m_hat = self.m[param_key] / (1 - np.power(self.beta1, self.t))
             v_hat = self.v[param_key] / (1 - np.power(self.beta2, self.t))
-            parameters[param_key] -= (
-                self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
-            )
+            parameters[param_key] -= (self.learning_rate * m_hat /
+                                      (np.sqrt(v_hat) + self.epsilon))
 
         return parameters
 
 
 class RMSpropOptimizer:
+
     def __init__(self, learning_rate=0.001, beta=0.9, epsilon=1e-5):
         self.learning_rate = learning_rate
         self.beta = beta
@@ -288,18 +289,16 @@ class RMSpropOptimizer:
                 self.cache[param_key] = np.zeros_like(parameters[param_key])
 
             self.cache[param_key] = self.beta * self.cache[param_key] + (
-                1 - self.beta
-            ) * np.square(gradients[param_key])
+                1 - self.beta) * np.square(gradients[param_key])
             parameters[param_key] -= (
-                self.learning_rate
-                * gradients[param_key]
-                / (np.sqrt(self.cache[param_key]) + self.epsilon)
-            )
+                self.learning_rate * gradients[param_key] /
+                (np.sqrt(self.cache[param_key]) + self.epsilon))
 
         return parameters
 
 
 class AdaGradOptimizer:
+
     def __init__(self, learning_rate=0.001, epsilon=1e-5):
         self.learning_rate = learning_rate
         self.epsilon = epsilon
@@ -312,16 +311,18 @@ class AdaGradOptimizer:
 
             self.cache[param_key] += np.square(gradients[param_key])
             parameters[param_key] -= (
-                self.learning_rate
-                * gradients[param_key]
-                / (np.sqrt(self.cache[param_key]) + self.epsilon)
-            )
+                self.learning_rate * gradients[param_key] /
+                (np.sqrt(self.cache[param_key]) + self.epsilon))
 
         return parameters
 
 
 class LinearRegression:
-    def __init__(self, optimizer="Adam", learning_rate=0.01, num_iterations=100):
+
+    def __init__(self,
+                 optimizer="Adam",
+                 learning_rate=0.01,
+                 num_iterations=100):
         self.optimizer = optimization_algorithm(optimizer)
         self.learning_rate = learning_rate
         self.num_iterations = num_iterations

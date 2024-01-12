@@ -1,0 +1,8 @@
+    {
+    "include": ["**/*.py","src"],
+    "exclude": ["/pycache","**/*.pyc","**/*.pyo"],
+    "executionEnvironments" : [{
+    "root":"src"
+    }]
+    }
+    
